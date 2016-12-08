@@ -46,10 +46,10 @@ def calc_lambda_central(classification_dict):
     lambdacen = (xleft + (width / 2.) - xmin) * lamperpix + lambdamin
     return lambdacen
 
-#Raw input file exported from the project builder
+# Raw input file exported from the project builder
 infile = "intro2astro-hubbles-law-classifications.csv"
 
-#Name of output csv file where results will be stored
+# Name of output csv file where results will be stored
 outfile='NU_astro_120.csv'
 
 # Name of workflow to be analyzed
@@ -63,7 +63,7 @@ all_raw_data['galaxy_id'] = [i['galID'] for i in all_raw_data['galaxy_metadata']
 
 # Select the workflow we are concerned with
 section_groups = all_raw_data.groupby('workflow_name')
-nu_raw_data = section_groups.get_group(workflow)
+workflow_data = section_groups.get_group(workflow)
 
 
 # Create new columns for purpose of filtering based on time
@@ -73,44 +73,43 @@ nu_raw_data = section_groups.get_group(workflow)
 # data that was recorded before a certain date and hour. For now though,
 # these lines are commented out, and all data is taken in.
 
-#nu_raw_data['day']=[int(i.split()[0].split('-')[-1]) for i in nu_raw_data['created_at']]
-#nu_raw_data['hour']=[int(i.split()[1].split(':')[0]) for i in nu_raw_data['created_at']]
-#nu_data=nu_raw_data.loc[(nu_raw_data['day']>23) & (nu_raw_data['hour']>0)]
-nu_data=nu_raw_data
+#workflow_data['day']=[int(i.split()[0].split('-')[-1]) for i in workflow_data['created_at']]
+#workflow_data['hour']=[int(i.split()[1].split(':')[0]) for i in workflow_data['created_at']]
+#workflow_data=workflow_data.loc[(workflow_data['day']>23) & (workflow_data['hour']>0)]
 
 
 # Group data by galaxy id
-nu_gal_groups = nu_data.groupby('galaxy_id')
+gal_groups = workflow_data.groupby('galaxy_id')
 
 # for each galaxy, calculate the average central wavelength
-m_galaxy_names = [name for name, group in nu_gal_groups]
-m_nclass = []
-m_lambdacen = []
-m_lambdaerr = []
-m_ra = []
-m_dec = []
-m_z = []
+galaxy_names = [name for name, group in gal_groups]
+nclass = []
+lambdacen = []
+lambdaerr = []
+ra = []
+dec = []
+z = []
 
 for galname in m_galaxy_names:
-    m_lambdacen.append(nu_gal_groups.get_group(galname)['lambdacen'].mean())
-    m_lambdaerr.append(nu_gal_groups.get_group(galname)['lambdacen'].std())
-    m_ra.append(nu_gal_groups.get_group(galname)['galaxy_metadata'].iloc[0]['ra'])
-    m_dec.append(nu_gal_groups.get_group(galname)['galaxy_metadata'].iloc[0]['dec'])
-    m_z.append(nu_gal_groups.get_group(galname)['galaxy_metadata'].iloc[0]['z'])
-    m_nclass.append(nu_gal_groups.get_group(galname)['lambdacen'].count())
+    lambdacen.append(gal_groups.get_group(galname)['lambdacen'].mean())
+    lambdaerr.append(gal_groups.get_group(galname)['lambdacen'].std())
+    ra.append(gal_groups.get_group(galname)['galaxy_metadata'].iloc[0]['ra'])
+    dec.append(gal_groups.get_group(galname)['galaxy_metadata'].iloc[0]['dec'])
+    z.append(gal_groups.get_group(galname)['galaxy_metadata'].iloc[0]['z'])
+    nclass.append(gal_groups.get_group(galname)['lambdacen'].count())
 
 # Approximate the distances based on the redshifts
-m_dist = [i * 3e5 / 68 for i in m_z]
+dist = [i * 3e5 / 68 for i in z]
 
 # create new dataframe with counts of classifications for each galaxy
-nu_results = pd.DataFrame({'Galaxy ID' : m_galaxy_names,
-                   'RA' : m_ra,
-                   'Dec' : m_dec,
-                   'Dist' : m_dist,
-                   'N Class' : m_nclass,
-                   'lambda_av' : m_lambdacen,
-                   'lambda_err' : m_lambdaerr})
-nu_results = nu_results[['Galaxy ID', 'N Class', 'RA', 'Dec', 'Dist', 'lambda_av', 'lambda_err']]
+results = pd.DataFrame({'Galaxy ID' : galaxy_names,
+                   'RA' : ra,
+                   'Dec' : dec,
+                   'Dist' : dist,
+                   'N Class' : nclass,
+                   'lambda_av' : lambdacen,
+                   'lambda_err' : lambdaerr})
+results = results[['Galaxy ID', 'N Class', 'RA', 'Dec', 'Dist', 'lambda_av', 'lambda_err']]
 
 # export data frame as csv file
-nu_results.to_csv(outfile, index=False)
+results.to_csv(outfile, index=False)
