@@ -90,7 +90,7 @@ ra = []
 dec = []
 z = []
 
-for galname in m_galaxy_names:
+for galname in galaxy_names:
     lambdacen.append(gal_groups.get_group(galname)['lambdacen'].mean())
     lambdaerr.append(gal_groups.get_group(galname)['lambdacen'].std())
     ra.append(gal_groups.get_group(galname)['galaxy_metadata'].iloc[0]['ra'])
