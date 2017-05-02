@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 from astroquery.sdss import SDSS
-import matplotlib.pyplot as plt
 
 def get_stats(choices_dict):
     # Input is a dict with classification options as the keys, and each option's count as integer values
