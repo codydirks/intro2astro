@@ -19,9 +19,7 @@ for i in range(len(clas)):
     # Since tasks alternate numerical values / NSEW options,
     # even indices give numerical values, odd indices give NSEW choices
     home_lat,home_lon,inst_lat,inst_lon=[tasks[i]['value'] for i in (0,2,4,6)]
-    home_lat_ns,home_lon_ew,inst_lat_ns,inst_lon_ew=[tasks[i]['value'][0]['label']
-                                                     if len(tasks[i]['value'][0]['label'])>1 else 'N/A'
-                                                     for i in (1,3,5,7)]
+    home_lat_ns,home_lon_ew,inst_lat_ns,inst_lon_ew=[tasks[i]['value'][0]['label'] for i in (1,3,5,7)]
 
     # Since eye/hair color are optional, need to check that a response exists
     # before parsing.
