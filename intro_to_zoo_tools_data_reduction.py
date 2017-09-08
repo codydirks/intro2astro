@@ -1,5 +1,13 @@
 import pandas as pd
 
+# Check if a value can be mapped to a float
+def check_input(value):
+    try:
+        float(value)
+        return True
+    except ValueError:
+        return False
+
 infile='introduction-to-the-zoo-tools-classifications.csv'
 outfile='zoo_tools_results.csv'
 workflow='workflow v4 - use this'
@@ -35,7 +43,7 @@ for i in range(len(workflow_data)):
         hair_col='N/A'
 
     # Check that all numerical inputs are a single number that can be mapped to a float
-    if all([len(x.split())==1 for x in (home_lat,home_lon,inst_lat,inst_lon)]):
+    if all([check_input(x) for x in (home_lat,home_lon,inst_lat,inst_lon)]):
         home_lat,home_lon,inst_lat,inst_lon=map(float,[home_lat,home_lon,inst_lat,inst_lon])
 
         # Use the NSEW inputs to convert numerical values to positive/negative
