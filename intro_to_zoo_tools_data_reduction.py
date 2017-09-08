@@ -2,9 +2,9 @@ import pandas as pd
 
 infile='introduction-to-the-zoo-tools-classifications.csv'
 outfile='zoo_tools_results.csv'
-
-clas=pd.read_csv(infile)
-clas=clas[5:] # Ignores earlier classifications with different tasks
+workflow='workflow v4 - use this'
+all_data=pd.read_csv(infile)
+workflow_data=all_data.groupby('workflow_name').get_group(workflow)
 results=pd.DataFrame({'Home Latitude':[],
                      'Home Longitude':[],
                      'Institution Latitude':[],
@@ -12,9 +12,8 @@ results=pd.DataFrame({'Home Latitude':[],
                      'Eye Color':[],
                      'Hair Color':[]
                      })
-
-for i in range(len(clas)):
-    tasks=pd.read_json(clas['annotations'].iloc[i])['value'].iloc[0]
+for i in range(len(workflow_data)):
+    tasks=pd.read_json(workflow_data['annotations'].iloc[i])['value'].iloc[0]
 
     # Since tasks alternate numerical values / NSEW options,
     # even indices give numerical values, odd indices give NSEW choices
