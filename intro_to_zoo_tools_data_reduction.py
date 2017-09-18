@@ -16,9 +16,7 @@ workflow_data=all_data.groupby('workflow_name').get_group(workflow)
 results=pd.DataFrame({'Home Latitude':[],
                      'Home Longitude':[],
                      'Institution Latitude':[],
-                     'Institution Longitude':[],
-                     'Eye Color':[],
-                     'Hair Color':[]
+                     'Institution Longitude':[]
                      })
 for i in range(len(workflow_data)):
     tasks=pd.read_json(workflow_data['annotations'].iloc[i])['value'].iloc[0]
@@ -30,17 +28,17 @@ for i in range(len(workflow_data)):
 
     # Since eye/hair color are optional, need to check that a response exists
     # before parsing.
-    eye_col_task=tasks[8]['value'][0]
-    if len(eye_col_task)>1:
-        eye_col=eye_col_task['label']
-    else:
-        eye_col='N/A'
+    #eye_col_task=tasks[8]['value'][0]
+    #if len(eye_col_task)>1:
+    #    eye_col=eye_col_task['label']
+    #else:
+    #    eye_col='N/A'
 
-    hair_col_task=tasks[9]['value'][0]
-    if len(hair_col_task)>1:
-        hair_col=hair_col_task['label']
-    else:
-        hair_col='N/A'
+    #hair_col_task=tasks[9]['value'][0]
+    #if len(hair_col_task)>1:
+    #    hair_col=hair_col_task['label']
+    #else:
+    #    hair_col='N/A'
 
     # Check that all numerical inputs are a single number that can be mapped to a float
     if all([check_input(x) for x in (home_lat,home_lon,inst_lat,inst_lon)]):
@@ -61,9 +59,7 @@ for i in range(len(workflow_data)):
         new_row=pd.DataFrame({'Home Latitude':[home_lat],
                      'Home Longitude':[home_lon],
                      'Institution Latitude':[inst_lat],
-                     'Institution Longitude':[inst_lon],
-                     'Eye Color':[eye_col],
-                     'Hair Color':[hair_col]
+                     'Institution Longitude':[inst_lon]
                      })
         results=pd.concat([results,new_row])
 
@@ -72,7 +68,5 @@ for i in range(len(workflow_data)):
 results=results[['Home Latitude',
                  'Home Longitude',
                  'Institution Latitude',
-                 'Institution Longitude',
-                 'Eye Color',
-                 'Hair Color']].reset_index(drop=True)
+                 'Institution Longitude']].reset_index(drop=True)
 results.to_csv(outfile,index=False)
