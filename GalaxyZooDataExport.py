@@ -59,7 +59,7 @@ for gx in workflow_data.subject_ids.unique():
     subject_classifications=galaxy_groups.get_group(gx)
 
     # Get SDSS galaxy id from metadata, specifically image name
-    image_file=pd.read_json(subject_classifications.iloc[0]['subject_data'])[gx].values[1]
+    image_file=pd.read_json(subject_classifications.iloc[0]['subject_data'])[gx]['image_file']
     gx_id=image_file[:-5]
     #display(Image(filename='Activity2Images/'+image_file, width=200, height=200))
 
