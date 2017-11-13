@@ -97,6 +97,7 @@ students=load_students_from_canvas_course(course_id, canvas_auth_token)
 
 students.sort(key=lambda x: x[0])# Sort student list by name
 group_ids=list(set([x[1] for x in students])) # Grabs set of all possible group ids
+num_groups=len(group_ids)
 reviews_per_student=2
 
 # Generate the entire pool of reviews at once, to guarantee each video is in the pool
@@ -111,7 +112,6 @@ initial_results=[(stdnt[0], stdnt[1], reviews_per_student*[None])for stdnt in st
 success=False
 while success==False:
     success=True
-    loop=loop+1
     pool=copy.copy(initial_pool)
     results=copy.copy(initial_results)
     for result in results:
@@ -132,7 +132,7 @@ while success==False:
 
 [a[2].sort() for a in results]
 # If a student was somehow assigned their own group, or assigned duplicate reviews,
-# that will be shown here
+# that will be printed here
 for result in results:
     if (result[1] in result[2]) or len(result[2]) != len(list(set(result[2]))):
         print result
@@ -146,6 +146,6 @@ final_results=copy.deepcopy(results)
 
 # If you used Canvas to get student info, you can also use Canvas to send out emails informing the students which videos they are to peer-review. The command to do so is commented out below to avoid accidentally sending out a mass email.
 
-#Before running this command, please double-check the function's code (defined along with the other functions in the 2nd cell of this notebook, and verify that the Canvas domain is correct, and that the email subject and body are to your liking. Once you've done so, you can uncomment and run the function below.
+#Before running this command, please double-check the function's code (defined along with the other functions in the 2nd cell of this notebook), and verify that the Canvas domain is correct, and that the email subject and body are to your liking. Once you've done so, you can uncomment and run the function below.
 
 #email_students_in_canvas(final_results, course_id, canvas_auth_token)
